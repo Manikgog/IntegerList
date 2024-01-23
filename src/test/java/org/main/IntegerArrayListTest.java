@@ -8,8 +8,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class IntegerArrayListTest {
-    private IntegerList integerList = new IntegerArrayList();
-
+    private final IntegerList integerList = new IntegerArrayList();
     @Test
     public void positiveAdd_Test(){
         int[] arr = Main.createArray(10_000, 1000_000);
@@ -280,6 +279,23 @@ public class IntegerArrayListTest {
 
         Assertions.assertTrue(Arrays.equals(arr, integerList.toArray()));
         Assertions.assertFalse(Arrays.equals(arr1, integerList.toArray()));
+    }
+
+    @Test
+    public void equals_Test(){
+        IntegerList integerList1 = new IntegerArrayList();
+        IntegerList integerList2 = new IntegerArrayList();
+
+        for (int i = 0; i < 100; i++) {
+            integerList.add(i);
+            integerList1.add(i);
+            if(i != 100/2){
+                integerList2.add(i);
+            }
+        }
+
+        Assertions.assertTrue(integerList.equals(integerList1));
+        Assertions.assertFalse(integerList.equals(integerList2));
     }
 
 
