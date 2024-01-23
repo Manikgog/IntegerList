@@ -8,8 +8,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class IntegerArrayListTest {
-    private IntegerList integerList = new IntegerArrayList();
-
+    private final IntegerList integerList = new IntegerArrayList();
     @Test
     public void positiveAdd_Test(){
         int[] arr = Main.createArray(10_000, 1000_000);
