@@ -12,7 +12,7 @@ public class IntegerArrayList implements IntegerList {
         array = new Integer[capacity];
     }
 
-    private Integer[] addCapacity() {
+    private Integer[] grow() {
         capacity = ((capacity * 3) / 2) + 1;
         Integer[] newArray = new Integer[capacity];
         for (int i = 0; i < this.array.length; i++) {
@@ -26,7 +26,7 @@ public class IntegerArrayList implements IntegerList {
             throw new NullParameterException("Переданный параметр равен null.");
         }
         if (size == capacity) {
-            array = addCapacity();
+            array = grow();
             size++;
             array[size - 1] = item;
             return item;
@@ -45,7 +45,7 @@ public class IntegerArrayList implements IntegerList {
             throw new IndexOutOfBoundsException();
         }
         if(size == capacity){
-            array = addCapacity();
+            array = grow();
         }
         size++;
         for (int i = size - 1; i > index; i--) {
@@ -82,11 +82,7 @@ public class IntegerArrayList implements IntegerList {
     }
     private void shrinkToSize() {
         capacity = size;
-        Integer[] newArray = new Integer[size];
-        for (int i = 0; i < size; i++) {
-            newArray[i] = array[i];
-        }
-        array = newArray;
+        array = Arrays.copyOf(array, size);
     }
     @Override
     public Integer remove(int index) {
@@ -97,7 +93,6 @@ public class IntegerArrayList implements IntegerList {
         array[index] = null;
         if (index < size - 1) {
             for (int j = index + 1, i = index; j < size; j++, i++) {
-                Integer tmp = array[i];
                 array[i] = array[j];
                 array[j] = null;
             }
@@ -118,7 +113,7 @@ public class IntegerArrayList implements IntegerList {
             throw new NullParameterException("Переданный параметр равен null.");
         }
         Integer[] arr = Arrays.copyOf(array, size);
-        sortInsertion(arr);
+        quickSort(arr, 0, arr.length - 1);
         return isContain(arr, item);
     }
 
@@ -142,16 +137,35 @@ public class IntegerArrayList implements IntegerList {
         return false;
     }
 
-    private void sortInsertion(Integer[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            int temp = arr[i];
-            int j = i;
-            while (j > 0 && arr[j - 1] >= temp) {
-                arr[j] = arr[j - 1];
-                j--;
-            }
-            arr[j] = temp;
+    public void quickSort(Integer[] arr, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(arr, begin, end);
+
+            quickSort(arr, begin, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, end);
         }
+    }
+
+    private int partition(Integer[] arr, int begin, int end) {
+        int pivot = arr[end];
+        int i = (begin - 1);
+
+        for (int j = begin; j < end; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+
+                swapElements(arr, i, j);
+            }
+        }
+
+        swapElements(arr, i + 1, end);
+        return i + 1;
+    }
+
+    private void swapElements(Integer[] arr, int left, int right) {
+        int temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
     }
 
     @Override
@@ -193,7 +207,7 @@ public class IntegerArrayList implements IntegerList {
         if(otherList == null){
             throw new NullParameterException("Переданный параметр равен null.");
         }
-        return Arrays.equals(array, otherList.toArray());
+        return Arrays.equals(Arrays.copyOf(array, size), otherList.toArray());
     }
 
     @Override
@@ -215,10 +229,6 @@ public class IntegerArrayList implements IntegerList {
 
     @Override
     public Integer[] toArray() {
-        Integer[] result = new Integer[size];
-        for (int i = 0; i < size; i++) {
-            result[i] = array[i];
-        }
-        return result;
+        return Arrays.copyOf(array, size);
     }
 }

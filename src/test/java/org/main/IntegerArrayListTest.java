@@ -281,5 +281,22 @@ public class IntegerArrayListTest {
         Assertions.assertFalse(Arrays.equals(arr1, integerList.toArray()));
     }
 
+    @Test
+    public void equals_Test(){
+        IntegerList integerList1 = new IntegerArrayList();
+        IntegerList integerList2 = new IntegerArrayList();
+
+        for (int i = 0; i < 100; i++) {
+            integerList.add(i);
+            integerList1.add(i);
+            if(i != 100/2){
+                integerList2.add(i);
+            }
+        }
+
+        Assertions.assertTrue(integerList.equals(integerList1));
+        Assertions.assertFalse(integerList.equals(integerList2));
+    }
+
 
 }
